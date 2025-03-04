@@ -1,0 +1,9 @@
+namespace Vulkan
+{
+    [default_interface]
+    runtimeclass Shaders_base : Windows.UI.Xaml.Controls.Page
+    {
+        Shaders_base();
+        Int32 MyProperty;
+    }
+}
