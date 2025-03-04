@@ -121,43 +121,41 @@ public:
     }
 
 private:
-    GLFWwindow* window;
+    GLFWwindow* window = nullptr;
 
-    VkInstance instance;
-    VkDebugUtilsMessengerEXT debugMessenger;
-    VkSurfaceKHR surface;
+    VkInstance instance = VK_NULL_HANDLE;
+    VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
+    VkSurfaceKHR surface = VK_NULL_HANDLE;
 
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-    VkDevice device;
+    VkDevice device = VK_NULL_HANDLE;
 
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
+    VkQueue graphicsQueue = VK_NULL_HANDLE;
+    VkQueue presentQueue = VK_NULL_HANDLE;
 
-    VkSwapchainKHR swapChain;
+    VkSwapchainKHR swapChain = VK_NULL_HANDLE;
     std::vector<VkImage> swapChainImages;
-    VkFormat swapChainImageFormat;
-    VkExtent2D swapChainExtent;
+    VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
+    VkExtent2D swapChainExtent = { 0, 0 };
     std::vector<VkImageView> swapChainImageViews;
     std::vector<VkFramebuffer> swapChainFramebuffers;
 
-    VkPipelineLayout pipelineLayout;
-    VkRenderPass renderPass;
+    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+    VkRenderPass renderPass = VK_NULL_HANDLE;
+    VkPipeline graphicsPipeline = VK_NULL_HANDLE;
 
-    VkPipeline graphicsPipeline;
-
-    VkCommandPool commandPool;
+    VkCommandPool commandPool = VK_NULL_HANDLE;
     std::vector<VkCommandBuffer> commandBuffers;
-
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;
     std::vector<VkFence> inFlightFences;
     uint32_t currentFrame = 0;
 
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
+    VkBuffer vertexBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
+    VkBuffer indexBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory indexBufferMemory = VK_NULL_HANDLE;
 
     bool framebufferResized = false;
 
