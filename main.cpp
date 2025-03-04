@@ -22,6 +22,8 @@
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
+float a = 1.0f;
+
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 FPSCounter fpsCounter;
@@ -202,6 +204,7 @@ private:
         }
         vkDeviceWaitIdle(device);
     }
+
 
     void drawFrame() {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
