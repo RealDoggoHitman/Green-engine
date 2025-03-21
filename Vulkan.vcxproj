@@ -105,13 +105,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\vilil\source\repos\Green-engine\Libraries\VulkanSDK\1.4.304.0\Include;C:\Users\vilil\source\repos\Green-engine\Libraries\glfw-3.4.bin.WIN64\include;C:\Users\vilil\source\repos\Green-engine\Libraries;C:\Users\vilil\source\repos\Green-engine\Libraries\ufbx-master;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\include;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\build\x64\include\assimp;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\include\assimp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\vilil\source\repos\Green-engine\Libraries\glfw-3.4.bin.WIN64\lib-vc2022;C:\Users\vilil\source\repos\Green-engine\Libraries\VulkanSDK\1.4.304.0\Lib;C:\Users\vilil\source\repos\Green-engine\Libraries\ufbx-master;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\build\x64\include\assimp;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\include\assimp;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\build\x64\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\vilil\source\repos\Green-engine\Libraries\VulkanSDK\1.4.304.0\Include;C:\Users\vilil\source\repos\Green-engine\Libraries\glfw-3.4.bin.WIN64\include;C:\Users\vilil\source\repos\Green-engine\Libraries;C:\Users\vilil\source\repos\Green-engine\Libraries\ufbx-master;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\include;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\build\x64\include\assimp;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\include\assimp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -131,7 +131,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\vilil\source\repos\Green-engine\Libraries\glfw-3.4.bin.WIN64\lib-vc2022;C:\Users\vilil\source\repos\Green-engine\Libraries\VulkanSDK\1.4.304.0\Lib;C:\Users\vilil\source\repos\Green-engine\Libraries\ufbx-master;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\build\x64\include\assimp;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\include\assimp;C:\Users\vilil\source\repos\Green-engine\Libraries\assimp-master\build\x64\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

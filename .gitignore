@@ -9,8 +9,6 @@
 *.slo
 *.lo
 *.o
-*.obj
-
 # Precompiled Headers
 *.gch
 *.pch
@@ -422,9 +420,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-
-# JetBrains Rider
-*.sln.iml
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
