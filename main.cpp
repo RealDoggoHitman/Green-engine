@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
 
+#include "Lua.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -152,6 +154,8 @@ public:
 
 private:
     GLFWwindow* window;
+
+    Lua luaTestApp;
 
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
@@ -393,6 +397,9 @@ private:
     }
 
     void updateUniformBuffer(uint32_t currentImage) {
+
+        luaTestApp.RunLuaScript();
+
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         auto currentTime = std::chrono::high_resolution_clock::now();

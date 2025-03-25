@@ -105,14 +105,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include;Libraries\lua-5.4.2;Libraries\lua-5.4.2\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;Libraries\lua-5.4.2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include;Libraries\lua-5.4.2;Libraries\lua-5.4.2\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -131,18 +131,24 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;Libraries\lua-5.4.2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FPSCounter.cpp" />
+    <ClCompile Include="Lua.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LuaScripts\LuaScript.lua" />
+    <None Include="LuaScripts\test.lua" />
     <None Include="packages.config" />
     <None Include="shaderf.frag" />
     <None Include="shaderv.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Lua.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
