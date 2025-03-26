@@ -42,6 +42,8 @@ const int MAX_FRAMES_IN_FLIGHT = 2;
 
 FPSCounter fpsCounter;
 
+Lua luaTestApp;
+
 const std::vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
@@ -146,16 +148,17 @@ struct UniformBufferObject {
 class HelloTriangleApplication {
 public:
     void run() {
+        luaTestApp.InitLua();
         initWindow();
         initVulkan();
         mainLoop();
-        cleanup();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+        cleanup();  
     }
 
 private:
     GLFWwindow* window;
 
-    Lua luaTestApp;
+    float deltaTime;
 
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
@@ -252,10 +255,9 @@ private:
         createColorResources();
         createDepthResources();
         createFramebuffers();
-        createTextureImage();
+        loadModel();
         createTextureImageView();
         createTextureSampler();
-        loadModel();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -266,12 +268,16 @@ private:
     }
 
     void mainLoop() {
+        double lastTime = glfwGetTime();
         while (!glfwWindowShouldClose(window)) {
             fpsCounter.frameStart();
             glfwPollEvents();
             drawFrame();
             fpsCounter.frameEnd();
 
+            double currentTime = glfwGetTime();
+            deltaTime = static_cast<float>(currentTime - lastTime);
+            lastTime = currentTime;
         }
         vkDeviceWaitIdle(device);
     }
@@ -397,41 +403,30 @@ private:
     }
 
     void updateUniformBuffer(uint32_t currentImage) {
+        luaTestApp.RunLuaScript(deltaTime);  // Suorita Lua-skripti päivitykselle
 
-        luaTestApp.RunLuaScript();
+        for (size_t i = 0; i < Lua::models.size(); i++) {
+            UniformBufferObject ubo{};
 
-        static auto startTime = std::chrono::high_resolution_clock::now();
+            // Käytä Lua-mallin muunnostietoja
+            const LuaModel& model = Lua::models[i];
+            glm::mat4 translation = glm::translate(glm::mat4(1.0f), model.transform.position);
+            glm::mat4 rotation = glm::toMat4(model.transform.rotation);
+            glm::mat4 scaling = glm::scale(glm::mat4(1.0f), model.transform.scale);
 
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+            ubo.model = translation * rotation * scaling;
 
-        UniformBufferObject ubo{};
+            // Kamera-asetukset
+            ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
+            ubo.proj[1][1] *= -1;  // Vulkan korjaus
 
-        // 🎭 Rotation on multiple axes
-        float angleX = glm::sin(time * 0.5f) * glm::radians(90.0f); // Oscillating X-axis rotation
-        float angleY = glm::cos(time * 0.7f) * glm::radians(45.0f); // Oscillating Y-axis rotation
-        float angleZ = glm::sin(time * 0.3f) * glm::radians(60.0f); // Oscillating Z-axis rotation
-
-        glm::mat4 rotationX = glm::rotate(glm::mat4(1.0f), angleX, glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 rotationY = glm::rotate(glm::mat4(1.0f), angleY, glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 rotationZ = glm::rotate(glm::mat4(1.0f), angleZ, glm::vec3(0.0f, 0.0f, 1.0f));
-
-        // 📏 Scaling effect (smooth pulsing)
-        float scaleFactor = 0.5f * glm::sin(time * 1.5f) + 2.5f;
-
-        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(scaleFactor));
-
-        // 🏗️ Combine transformations: Scaling → Rotation
-        ubo.model = scale * rotationX * rotationY * rotationZ;
-
-        // 📷 Camera View
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
-        ubo.proj[1][1] *= -1;
-
-        // 📝 Update uniform buffer
-        memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+            // Varmista oikea osoitteen laskenta
+            memcpy(reinterpret_cast<char*>(uniformBuffersMapped[currentImage]) + i * sizeof(UniformBufferObject),
+                &ubo, sizeof(UniformBufferObject));
+        }
     }
+
 
 
 
@@ -893,8 +888,8 @@ private:
             framebufferInfo.renderPass = renderPass;
             framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = swapChainExtent.width;
-            framebufferInfo.height = swapChainExtent.height;
+            framebufferInfo.width = swapChainExtent.width;   
+            framebufferInfo.height = swapChainExtent.height; 
             framebufferInfo.layers = 1;
 
             if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
@@ -1018,36 +1013,47 @@ private:
     }
 
     void cleanupSwapChain() {
+        // Clean up swap chain resources
         vkDestroyImageView(device, depthImageView, nullptr);
         vkDestroyImage(device, depthImage, nullptr);
         vkFreeMemory(device, depthImageMemory, nullptr);
+
+        // Clean up framebuffers
         for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
             vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
         }
 
+        // Clean up image views
         for (size_t i = 0; i < swapChainImageViews.size(); i++) {
             vkDestroyImageView(device, swapChainImageViews[i], nullptr);
         }
 
+        // Clean up the swap chain
         vkDestroySwapchainKHR(device, swapChain, nullptr);
+
+        // Cleanup command buffer if it exists
     }
+
 
     void recreateSwapChain() {
         int width = 0, height = 0;
+
+        glfwGetFramebufferSize(window, &width, &height);
         while (width == 0 || height == 0) {
-            glfwGetFramebufferSize(window, &width, &height);
             glfwWaitEvents();
+            glfwGetFramebufferSize(window, &width, &height);
         }
 
+
         vkDeviceWaitIdle(device);
+
+        cleanupSwapChain();
+        createSwapChain();
 
         createImageViews();
         createColorResources();
         createDepthResources();
 
-        cleanupSwapChain();
-
-        createSwapChain();
         createImageViews();
         createDepthResources();
         createFramebuffers();
@@ -1060,9 +1066,9 @@ private:
         depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
     }
 
-    void createTextureImage() {
+    void createTextureImage(std::string texturePath) {
         int texWidth, texHeight, texChannels;
-        stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        stbi_uc* pixels = stbi_load(texturePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
         VkDeviceSize imageSize = texWidth * texHeight * 4;
         mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
 
@@ -1092,7 +1098,6 @@ private:
 
         generateMipmaps(textureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, mipLevels);
     }
-
 
     void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
         VkFormatProperties formatProperties;
@@ -1431,7 +1436,6 @@ private:
         return Mesh(std::move(vertices), std::move(indices));
     }
 
-
     void processNode(aiNode* node, const aiScene* scene) {
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -1443,16 +1447,28 @@ private:
     }
 
     void loadModel() {
-        Assimp::Importer importer;
-        if (MODEL_PATH.empty()) {
-            throw std::runtime_error("failed to read model path image!");
+
+        for (size_t i = 0; i < Lua::models.size(); i++) {
+            Assimp::Importer importer;
+            std::string modelPath = Lua::models[i].modelPath;
+
+
+            if (modelPath.empty()) {
+                throw std::runtime_error("Failed to read model path!");
+            }
+
+            const aiScene* scene = importer.ReadFile(modelPath.c_str(),
+                aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+            if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+                std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+                continue;
+            }
+            createTextureImage(Lua::models[i].texturePath);
+
+            processNode(scene->mRootNode, scene);
         }
-        const aiScene* scene = importer.ReadFile(MODEL_PATH.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-            return;
-        }
-        processNode(scene->mRootNode, scene);
+
     }
 
 
