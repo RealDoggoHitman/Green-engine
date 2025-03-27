@@ -403,25 +403,23 @@ private:
     }
 
     void updateUniformBuffer(uint32_t currentImage) {
-        luaTestApp.RunLuaScript(deltaTime);  // Suorita Lua-skripti päivitykselle
+        luaTestApp.RunLuaScript(deltaTime);
 
         for (size_t i = 0; i < Lua::models.size(); i++) {
             UniformBufferObject ubo{};
 
-            // Käytä Lua-mallin muunnostietoja
             const LuaModel& model = Lua::models[i];
             glm::mat4 translation = glm::translate(glm::mat4(1.0f), model.transform.position);
-            glm::mat4 rotation = glm::toMat4(model.transform.rotation);
+            glm::quat quaternion = glm::quat(glm::radians(model.transform.rotation));
+            glm::mat4 rotation = glm::toMat4(quaternion);
             glm::mat4 scaling = glm::scale(glm::mat4(1.0f), model.transform.scale);
 
             ubo.model = translation * rotation * scaling;
 
-            // Kamera-asetukset
             ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
             ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
-            ubo.proj[1][1] *= -1;  // Vulkan korjaus
+            ubo.proj[1][1] *= -1;
 
-            // Varmista oikea osoitteen laskenta
             memcpy(reinterpret_cast<char*>(uniformBuffersMapped[currentImage]) + i * sizeof(UniformBufferObject),
                 &ubo, sizeof(UniformBufferObject));
         }

@@ -1,27 +1,24 @@
 local totaltime = 0.0
+local scaleFactor = 1.0
+local colorShift = 0.0
 
 function Start()
-    -- Create the object at the start
-    model1 = createObject("Models/ceece.obj", "Textures/texture.png")
+    model1 = createObject("Models/cube.obj", "Textures/texture.png")
 end
 
 function Update(deltaTime)
-    -- Update the total time (fix typo)
-    totaltime = totaltime + deltaTime
+    -- Increase total time
+    totaltime = totaltime + deltaTime * 20
 
-    -- Calculate angle based on deltaTime
-    local angle = totaltime * 2.0
+    -- Rotate dynamically using sine waves
+    local speedFactor = math.sin(totaltime * 0.1) * 50  -- Vary speed over time
+    setRotX(model1, totaltime + speedFactor)
+    setRotY(model1, totaltime - speedFactor)
 
-    -- Rotation
-    setRotation(model1, 0, math.sin(angle), math.cos(angle), 1)
+    -- Pulsating scale effect
+    scaleFactor = 1.0 + math.sin(totaltime * 0.2) * 0.3
+    setScale(model1, scaleFactor, scaleFactor, scaleFactor)
 
-    -- Radius for circular motion
-    local radius = 3.0
-    -- Position
-    setPosition(model1, math.sin(angle) * radius, math.cos(angle) * radius, 0)
-
-    -- Scale oscillation
-    local scale = 1.0 + 0.5 * math.sin(totaltime * 3.0)
-    -- Scale
-    setScale(model1, scale, scale, scale)
+    -- Dynamic color shifting
+    colorShift = (math.sin(totaltime * 0.05) + 1) * 0.5  -- Normalize between 0 and 1
 end
