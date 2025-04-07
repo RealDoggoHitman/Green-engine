@@ -30,7 +30,8 @@
 #include <array>
 #include <optional>
 #include <set>
-#include "FPSCounter.cpp"
+
+#include "ImguiWindows.h"
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -39,8 +40,6 @@ const std::string MODEL_PATH = "Models/ceece.obj";
 const std::string TEXTURE_PATH = "Textures/texture.png";
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
-
-FPSCounter fpsCounter;
 
 Lua luaTestApp;
 
@@ -151,6 +150,7 @@ public:
         luaTestApp.InitLua();
         initWindow();
         initVulkan();
+        initImgui();
         mainLoop();
         cleanup();  
     }
@@ -239,7 +239,6 @@ private:
         app->framebufferResized = true;
     }
 
-
     void initVulkan() {
         createInstance();
         setupDebugMessenger();
@@ -267,13 +266,40 @@ private:
         createSyncObjects();
     }
 
+    void initImgui()
+    {
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForVulkan(window, true);
+
+        QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
+
+        ImGui_ImplVulkan_InitInfo info = {};
+        info.Instance = instance;
+        info.PhysicalDevice = physicalDevice;
+        info.Device = device;
+        info.QueueFamily = queueFamilyIndices.graphicsFamily.value();
+        info.Queue = graphicsQueue;            
+        info.PipelineCache = VK_NULL_HANDLE;
+        info.DescriptorPool = descriptorPool;
+        info.MinImageCount = MAX_FRAMES_IN_FLIGHT;
+        info.ImageCount = MAX_FRAMES_IN_FLIGHT;
+        info.MSAASamples = msaaSamples;
+        info.Allocator = nullptr;
+
+        ImGui_ImplVulkan_Init(&info);
+
+        ImGui_ImplVulkan_CreateFontsTexture();
+
+        vkDeviceWaitIdle(device);
+    }
+
+
+
     void mainLoop() {
         double lastTime = glfwGetTime();
         while (!glfwWindowShouldClose(window)) {
-            fpsCounter.frameStart();
             glfwPollEvents();
             drawFrame();
-            fpsCounter.frameEnd();
 
             double currentTime = glfwGetTime();
             deltaTime = static_cast<float>(currentTime - lastTime);
@@ -281,6 +307,8 @@ private:
         }
         vkDeviceWaitIdle(device);
     }
+
+
 
     void drawFrame() {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
@@ -298,10 +326,9 @@ private:
 
         updateUniformBuffer(currentFrame);
 
-        vkResetFences(device, 1, &inFlightFences[currentFrame]);
-
-        vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
         recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
+
+        vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -349,6 +376,10 @@ private:
     }
 
     void cleanup() {
+        ImGui_ImplVulkan_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
         vkDestroyImageView(device, colorImageView, nullptr);
         vkDestroyImage(device, colorImage, nullptr);
         vkFreeMemory(device, colorImageMemory, nullptr);
@@ -933,6 +964,7 @@ private:
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
             throw std::runtime_error("failed to begin recording command buffer!");
@@ -979,6 +1011,15 @@ private:
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 
         vkCmdDrawIndexed(commandBuffer, indices.size(), 1, 0, 0, 0);
+
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        DrawImguiWindows();
+
+        ImGui::Render();
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
@@ -1544,20 +1585,32 @@ private:
     }
 
     void createDescriptorPool() {
-        VkDescriptorPoolSize poolSize{};
-        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        std::array<VkDescriptorPoolSize, 11> poolSizes = {
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+            VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+        };
 
         VkDescriptorPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.poolSizeCount = 1;
-        poolInfo.pPoolSizes = &poolSize;
-        poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+        poolInfo.pPoolSizes = poolSizes.data();
+        poolInfo.maxSets = 1000 * static_cast<uint32_t>(poolSizes.size());
 
         if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create descriptor pool!");
         }
     }
+
 
     void createDescriptorSets() {
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);

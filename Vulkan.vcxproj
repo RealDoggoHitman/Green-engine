@@ -105,13 +105,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include;Libraries\lua-5.4.2;Libraries\lua-5.4.2\include;Models;Textures;C:\Users\vilil\OneDrive\Tiedostot\GitHub\Green-engine\Libraries\luasocket-3.1.0\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include;Libraries\lua-5.4.2;Libraries\lua-5.4.2\include;Models;Textures;Libraries\imgui-1.91.9b;Libraries\imgui-1.91.9b\backends;Green-engine;Libraries\ImGuiColorTextEdit-master</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;Libraries\lua-5.4.2;Models;Textures;C:\Users\vilil\OneDrive\Tiedostot\GitHub\Green-engine\Libraries\luasocket-3.1.0\src;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;Libraries\lua-5.4.2;Models;Textures;Libraries\imgui-1.91.9b;Libraries\imgui-1.91.9b\backends;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include;Libraries\lua-5.4.2;Libraries\lua-5.4.2\include;Models;Textures;C:\Users\vilil\OneDrive\Tiedostot\GitHub\Green-engine\Libraries\luasocket-3.1.0\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libraries\VulkanSDK\1.4.304.0\Include;Libraries\glfw-3.4.bin.WIN64\include;Libraries;Libraries\ufbx-master;Libraries\assimp-master\include;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\include;Libraries\lua-5.4.2;Libraries\lua-5.4.2\include;Models;Textures;Libraries\imgui-1.91.9b;Libraries\imgui-1.91.9b\backends;Green-engine;Libraries\ImGuiColorTextEdit-master</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -131,13 +131,21 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;Libraries\lua-5.4.2;Models;Textures;C:\Users\vilil\OneDrive\Tiedostot\GitHub\Green-engine\Libraries\luasocket-3.1.0\src;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Libraries\glfw-3.4.bin.WIN64\lib-vc2022;Libraries\VulkanSDK\1.4.304.0\Lib;Libraries\ufbx-master;Libraries\assimp-master;Libraries\assimp-master\build\x64\include\assimp;Libraries\assimp-master\include\assimp;Libraries\assimp-master\build\x64\lib\Release;Libraries\assimp-master\build\x64\include;Libraries\assimp-master\build\x64\lib;Libraries;Libraries\lua-5.4.2;Models;Textures;Libraries\imgui-1.91.9b;Libraries\imgui-1.91.9b\backends;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;assimp-vc143-mt.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FPSCounter.cpp" />
+    <ClCompile Include="ImguiWindows.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\TextEditor.cpp" />
+    <ClCompile Include="Libraries\imgui-1.91.9b\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Libraries\imgui-1.91.9b\backends\imgui_impl_vulkan.cpp" />
     <ClCompile Include="Lua.cpp" />
+    <ClCompile Include="ImguiWindows.h" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +156,7 @@
     <None Include="shaderv.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\TextEditor.h" />
     <ClInclude Include="Lua.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
