@@ -57,6 +57,8 @@ public:
     void RunLuaScript(float deltaTime);
     void RegisterFunctions();
 
+    static void ReloadIfModified();
+
     static std::vector<LuaModel> models; 
     static int createObject(lua_State* L);
     static int setPosition(lua_State* L);

@@ -149,8 +149,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="LuaScripts\LuaScript.lua" />
-    <None Include="LuaScripts\test.lua" />
+    <None Include="LuaScripts\Main.lua" />
     <None Include="packages.config" />
     <None Include="shaderf.frag" />
     <None Include="shaderv.vert" />

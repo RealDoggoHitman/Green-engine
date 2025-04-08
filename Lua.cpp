@@ -1,15 +1,23 @@
 #include "Lua.h"
+#include <filesystem>
 std::vector<LuaModel> Lua::models;
 
+namespace fs = std::filesystem;
+
+static std::string currentScriptPath;
+
+
+
 void Lua::InitLua() {
+    models.clear();
     L = luaL_newstate();
     luaL_openlibs(L);
     RegisterFunctions();
 
     // Load the Lua script
-    if (luaL_dofile(L, "LuaScripts/LuaScript.lua") != LUA_OK) {
+    if (luaL_dofile(L, "LuaScripts/Main.lua") != LUA_OK) {
         std::cerr << "Error running Lua script: " << lua_tostring(L, -1) << std::endl;
-        lua_pop(L, 1);  // Pop the error message
+        lua_pop(L, 1);
     }
 
     // Call the Start function if it exists
@@ -17,12 +25,13 @@ void Lua::InitLua() {
     if (lua_isfunction(L, -1)) {
         if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
             std::cerr << "Error calling Start function: " << lua_tostring(L, -1) << std::endl;
-            lua_pop(L, 1);  // Pop the error message
+            lua_pop(L, 1);
         }
     }
     else {
         std::cerr << "Start function not found in Lua script." << std::endl;
     }
+
 }
 
 void Lua::RunLuaScript(float deltaTime) {

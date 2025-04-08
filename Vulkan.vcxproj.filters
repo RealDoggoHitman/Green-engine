@@ -63,10 +63,7 @@
     <None Include="shaderf.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="LuaScripts\test.lua">
-      <Filter>LuaScripts</Filter>
-    </None>
-    <None Include="LuaScripts\LuaScript.lua">
+    <None Include="LuaScripts\Main.lua">
       <Filter>LuaScripts</Filter>
     </None>
   </ItemGroup>
