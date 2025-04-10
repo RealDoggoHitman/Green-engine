@@ -1,7 +1,15 @@
 ﻿// ImGuiWindows.cpp
 #include "ImguiWindows.h"
+#include "RestartVulkan.h"
+#include "Lua.h"
+
+extern Lua luaTestApp;
+
+Lua luaTestApp;
 
 namespace fs = std::filesystem;
+
+RestartVukan restartvulkan;
 
 void DrawImguiWindows()
 {
@@ -147,7 +155,9 @@ void DrawImguiWindows()
                     file << editor.GetText();
                     file.close();
 
-                    luaCode.InitLua();
+                    luaTestApp.InitLua();
+
+                    restartvulkan.restart();
                 }
             }
         }

@@ -33,15 +33,14 @@
 
 #include "ImguiWindows.h"
 
+#include "RestartVulkan.h"
+
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
-const std::string MODEL_PATH = "Models/ceece.obj";
-const std::string TEXTURE_PATH = "Textures/texture.png";
-
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
-Lua luaTestApp;
+extern Lua luaTestApp;
 
 const std::vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation"
@@ -143,8 +142,9 @@ struct UniformBufferObject {
     glm::mat4 view;
     glm::mat4 proj;
 };
+   
 
-class HelloTriangleApplication {
+class VulkanEngine {
 public:
     void run() {
         luaTestApp.InitLua();
@@ -153,6 +153,10 @@ public:
         initImgui();
         mainLoop();
         cleanup();  
+    }
+
+    void restartVulkan()
+    {
     }
 
 private:
@@ -235,7 +239,7 @@ private:
     }
 
     static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-        auto app = reinterpret_cast<HelloTriangleApplication*>(glfwGetWindowUserPointer(window));
+        auto app = reinterpret_cast<VulkanEngine*>(glfwGetWindowUserPointer(window));
         app->framebufferResized = true;
     }
 
@@ -266,6 +270,57 @@ private:
         createSyncObjects();
     }
 
+    void cleanupVulkan()
+    {
+        vkDestroyImageView(device, colorImageView, nullptr);
+        vkDestroyImage(device, colorImage, nullptr);
+        vkFreeMemory(device, colorImageMemory, nullptr);
+
+        cleanupSwapChain();
+
+        vkDestroySampler(device, textureSampler, nullptr);
+        vkDestroyImageView(device, textureImageView, nullptr);
+
+        vkDestroyImage(device, textureImage, nullptr);
+        vkFreeMemory(device, textureImageMemory, nullptr);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vkDestroyBuffer(device, uniformBuffers[i], nullptr);
+            vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
+        }
+
+        vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+
+        vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+
+        vkDestroyPipeline(device, graphicsPipeline, nullptr);
+        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+        vkDestroyRenderPass(device, renderPass, nullptr);
+
+        vkDestroyBuffer(device, indexBuffer, nullptr);
+        vkFreeMemory(device, indexBufferMemory, nullptr);
+
+        vkDestroyBuffer(device, vertexBuffer, nullptr);
+        vkFreeMemory(device, vertexBufferMemory, nullptr);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+            vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+            vkDestroyFence(device, inFlightFences[i], nullptr);
+        }
+
+        vkDestroyCommandPool(device, commandPool, nullptr);
+
+        vkDestroyDevice(device, nullptr);
+
+        if (enableValidationLayers) {
+            DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+        }
+
+        vkDestroySurfaceKHR(instance, surface, nullptr);
+        vkDestroyInstance(instance, nullptr);
+    }
+
     void initImgui()
     {
         ImGui::CreateContext();
@@ -293,8 +348,6 @@ private:
         vkDeviceWaitIdle(device);
     }
 
-
-
     void mainLoop() {
         double lastTime = glfwGetTime();
         while (!glfwWindowShouldClose(window)) {
@@ -307,8 +360,6 @@ private:
         }
         vkDeviceWaitIdle(device);
     }
-
-
 
     void drawFrame() {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
@@ -376,61 +427,19 @@ private:
     }
 
     void cleanup() {
-        ImGui_ImplVulkan_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
-
-        vkDestroyImageView(device, colorImageView, nullptr);
-        vkDestroyImage(device, colorImage, nullptr);
-        vkFreeMemory(device, colorImageMemory, nullptr);
-
-        cleanupSwapChain();
-
-        vkDestroySampler(device, textureSampler, nullptr);
-        vkDestroyImageView(device, textureImageView, nullptr);
-
-        vkDestroyImage(device, textureImage, nullptr);
-        vkFreeMemory(device, textureImageMemory, nullptr);
-
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroyBuffer(device, uniformBuffers[i], nullptr);
-            vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
-        }
-
-        vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-
-        vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-
-        vkDestroyPipeline(device, graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-        vkDestroyRenderPass(device, renderPass, nullptr);
-
-        vkDestroyBuffer(device, indexBuffer, nullptr);
-        vkFreeMemory(device, indexBufferMemory, nullptr);
-
-        vkDestroyBuffer(device, vertexBuffer, nullptr);
-        vkFreeMemory(device, vertexBufferMemory, nullptr);
-
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-            vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-            vkDestroyFence(device, inFlightFences[i], nullptr);
-        }
-
-        vkDestroyCommandPool(device, commandPool, nullptr);
-
-        vkDestroyDevice(device, nullptr);
-
-        if (enableValidationLayers) {
-            DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-        }
-
-        vkDestroySurfaceKHR(instance, surface, nullptr);
-        vkDestroyInstance(instance, nullptr);
+        cleanupImgui();
+        cleanupVulkan();
 
         glfwDestroyWindow(window);
 
         glfwTerminate();
+    }
+
+    void cleanupImgui()
+    {
+        ImGui_ImplVulkan_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
     }
 
     void updateUniformBuffer(uint32_t currentImage) {
@@ -1069,7 +1078,6 @@ private:
 
         // Cleanup command buffer if it exists
     }
-
 
     void recreateSwapChain() {
         int width = 0, height = 0;
@@ -1958,8 +1966,13 @@ private:
     }
 };
 
+VulkanEngine app;
+
+void RestartVukan::restart() {
+    app.restartVulkan();
+}
+
 int main() {
-    HelloTriangleApplication app;
 
     try {
         app.run();

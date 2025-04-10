@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="imgui\TextEditor.h" />
     <ClInclude Include="Lua.h" />
+    <ClInclude Include="RestartVulkan.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

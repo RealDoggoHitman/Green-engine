@@ -3,12 +3,12 @@ local scaleFactor = 1.0
 local colorShift = 0.0
 
 function Start()
-    model1 = createObject("Models/cube.obj", "Textures/baby.png")
+    model1 = createObject("Models/cube.obj", "Textures/texture.png")
 end
 
 function Update(deltaTime)
     -- Increase total time
-    totaltime = totaltime + deltaTime * 20 * 3
+    totaltime = totaltime + deltaTime * 20
 
     -- Rotate dynamically using sine waves
     local speedFactor = math.sin(totaltime * 0.1) * 50  -- Vary speed over time
@@ -22,22 +22,3 @@ function Update(deltaTime)
     -- Dynamic color shifting
     colorShift = (math.sin(totaltime * 0.05) + 1) * 0.5  -- Normalize between 0 and 1
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

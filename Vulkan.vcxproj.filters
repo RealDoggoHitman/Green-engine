@@ -74,5 +74,8 @@
     <ClInclude Include="imgui\TextEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RestartVulkan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

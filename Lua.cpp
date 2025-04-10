@@ -10,17 +10,20 @@ static std::string currentScriptPath;
 
 void Lua::InitLua() {
     models.clear();
+    if (L) {
+        lua_close(L);
+        L = nullptr;
+    }
+
     L = luaL_newstate();
     luaL_openlibs(L);
     RegisterFunctions();
 
-    // Load the Lua script
     if (luaL_dofile(L, "LuaScripts/Main.lua") != LUA_OK) {
         std::cerr << "Error running Lua script: " << lua_tostring(L, -1) << std::endl;
         lua_pop(L, 1);
     }
 
-    // Call the Start function if it exists
     lua_getglobal(L, "Start");
     if (lua_isfunction(L, -1)) {
         if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
@@ -30,9 +33,10 @@ void Lua::InitLua() {
     }
     else {
         std::cerr << "Start function not found in Lua script." << std::endl;
+        lua_pop(L, 1);
     }
-
 }
+
 
 void Lua::RunLuaScript(float deltaTime) {
     lua_getglobal(L, "Update");
